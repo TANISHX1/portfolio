@@ -1,10 +1,11 @@
 "use client";
 
-import { Activity, BarChart2, Wifi, Volume2, Battery, Power, Grid, Sun, Moon } from "lucide-react";
+import { Activity, BarChart2, Wifi, Volume2, VolumeX, Battery, Power, Grid, Sun, Moon } from "lucide-react";
 import { useEffect, useState } from "react";
-import { AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { useTheme } from "@/context/ThemeContext";
 import { PowerMenu } from "./PowerMenu";
+import { VolumeControl } from "./VolumeControl";
 
 interface TopBarProps {
   activeApp: string | null;
@@ -12,16 +13,19 @@ interface TopBarProps {
   showLauncher: boolean;
   profileName: string;
   isDragging?: boolean;
+  volume: number;
+  setVolume: (vol: number) => void;
   onSystemAction?: (action: 'restart' | 'shutdown' | 'suspend') => void;
 }
 
-export function TopBar({ activeApp, onLauncherToggle, showLauncher, profileName, isDragging, onSystemAction }: TopBarProps) {
+export function TopBar({ activeApp, onLauncherToggle, showLauncher, profileName, isDragging, volume, setVolume, onSystemAction }: TopBarProps) {
   const { theme, toggleTheme } = useTheme();
   const isRice = theme === "rice";
   const [time, setTime] = useState("");
   const [date, setDate] = useState("");
   const [stats, setStats] = useState({ cpu: 12, ram: 45 });
   const [showPowerMenu, setShowPowerMenu] = useState(false);
+  const [showVolumeControl, setShowVolumeControl] = useState(false);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -41,7 +45,7 @@ export function TopBar({ activeApp, onLauncherToggle, showLauncher, profileName,
   }, []);
 
   return (
-    <header className={`h-8 z-50 flex items-center justify-between px-3 text-[11px] w-full shadow-lg transition-all duration-300 border-b ${
+    <header id="top-bar" className={`h-8 z-50 flex items-center justify-between px-3 text-[11px] w-full shadow-lg transition-all duration-300 border-b ${
       isRice ? 'bg-black/90 border-purple-500/20 text-purple-100' : 'bg-[#31363b]/90 border-black/10 text-white'
     }`}>
       <div className="flex items-center gap-4">
@@ -70,8 +74,15 @@ export function TopBar({ activeApp, onLauncherToggle, showLauncher, profileName,
         )}
       </div>
       
+      <div className="flex-1 flex justify-center items-center font-mono text-[10px] sm:text-[11px] opacity-80 whitespace-nowrap overflow-hidden text-ellipsis px-2">
+        <span className="hidden sm:inline">Created at: {time} | </span>
+        <span className="text-blue-400 font-bold ml-1">EVENT CODE: SCRS_PA</span>
+        <span className="text-purple-400 font-bold ml-2">UID: SCRS_ARENA_A47</span>
+      </div>
+
       <div className="flex items-center gap-3">
         <button 
+          id="theme-toggle"
           onClick={toggleTheme}
           className={`p-1.5 rounded-md transition-all ${isRice ? 'text-purple-400 hover:bg-purple-500/20' : 'text-blue-400 hover:bg-white/5'}`}
           title={`Switch to ${isRice ? 'KDE' : 'Rice'} Theme`}
@@ -92,7 +103,27 @@ export function TopBar({ activeApp, onLauncherToggle, showLauncher, profileName,
         
         <div className="flex items-center gap-3 opacity-60">
           <Wifi size={13} className="hover:text-blue-400 cursor-pointer transition-colors" />
-          <Volume2 size={13} className="hover:text-blue-400 cursor-pointer transition-colors" />
+          
+          <div className="relative flex items-center">
+            <button 
+              onClick={() => setShowVolumeControl(!showVolumeControl)}
+              className={`hover:text-blue-400 cursor-pointer transition-colors ${showVolumeControl ? 'text-blue-400' : ''}`}
+            >
+              {volume === 0 ? <VolumeX size={13} className="text-red-500" /> : <Volume2 size={13} />}
+            </button>
+            
+            <AnimatePresence>
+              {showVolumeControl && (
+                <VolumeControl 
+                  volume={volume} 
+                  setVolume={setVolume} 
+                  isRice={isRice} 
+                  onClose={() => setShowVolumeControl(false)} 
+                />
+              )}
+            </AnimatePresence>
+          </div>
+
           <Battery size={13} className="text-emerald-500" />
         </div>
         

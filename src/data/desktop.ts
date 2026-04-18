@@ -1,4 +1,4 @@
-import { Terminal, Cpu, FolderGit2, Github, Linkedin, Mail } from "lucide-react";
+import { Terminal, Cpu, FolderGit2, Github, Linkedin, Mail, Info, Music, Users, Compass } from "lucide-react";
 
 export const desktopConfig = {
   wallpaper: "/wallpapers/himalayas.jpg", // Placeholder until verified
@@ -12,6 +12,10 @@ export const desktopIcons = [
   { id: "Terminal", icon: Terminal, label: "Konsole", color: "text-[#22da6e]" },
   { id: "Projects", icon: FolderGit2, label: "Dolphin", color: "text-blue-500" },
   { id: "Skills", icon: Cpu, label: "System Info", color: "text-[#3daee9]" },
+  { id: "Music", icon: Music, label: "Amarok", color: "text-orange-400" },
+  { id: "ProjectDetail", icon: Info, label: "Project Info", color: "text-violet-400" },
+  { id: "Contacts", icon: Users, label: "Contacts", color: "text-emerald-400" },
+  { id: "Tour", icon: Compass, label: "OS Tour", color: "text-amber-400" },
 ];
 
 export const socialIcons = [

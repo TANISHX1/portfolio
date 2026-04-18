@@ -84,12 +84,21 @@ export function BootSequence({
     <motion.div 
       initial={{ opacity: 1 }}
       exit={{ opacity: 0, transition: { duration: 0.8 } }}
-      className="fixed inset-0 z-[9999] bg-black text-white font-mono p-6 sm:p-12 md:p-24 selection:bg-white/20"
+      className="fixed inset-0 z-[9999] bg-black text-white font-mono p-4 selection:bg-white/20"
     >
       <div 
         ref={scrollRef}
-        className="h-full overflow-y-auto custom-scrollbar flex flex-col gap-1 text-[10px] sm:text-xs md:text-sm"
+        className="h-full overflow-y-auto flex flex-col gap-1 text-[10px] sm:text-xs md:text-sm"
+        style={{ 
+          msOverflowStyle: 'none',  /* IE and Edge */
+          scrollbarWidth: 'none'    /* Firefox */
+        }}
       >
+        <style dangerouslySetInnerHTML={{ __html: `
+          div::-webkit-scrollbar {
+            display: none;
+          }
+        `}} />
         <AnimatePresence initial={false}>
           {logs.map((log, i) => {
             if (!log) return null;

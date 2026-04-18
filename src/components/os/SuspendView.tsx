@@ -86,7 +86,7 @@ function BinaryRain() {
       left: `${(i / cols) * 100}%`,
       duration: 3 + Math.random() * 4,
       delay: Math.random() * 5,
-      opacity: 0.1 + Math.random() * 0.4,
+      opacity: 0.30 + Math.random() * 0.55,
       chars: Array.from({ length: 20 }).map(() => Math.round(Math.random()))
     }));
     setColumns(newColumns);
@@ -109,7 +109,7 @@ function BinaryRain() {
           style={{ left: col.left, opacity: col.opacity }}
         >
           {col.chars.map((char: number, idx: number) => (
-            <span key={idx} className={idx === col.chars.length - 1 ? "text-green-400 shadow-[0_0_8px_rgba(74,222,128,0.8)]" : "text-green-900/40"}>
+            <span key={idx} className={idx === col.chars.length - 1 ? "text-green-400 shadow-[0_0_12px_rgba(74,222,128,0.9)]" : "text-green-700/75"}>
               {char}
             </span>
           ))}

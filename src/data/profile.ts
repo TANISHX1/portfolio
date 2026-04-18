@@ -5,7 +5,7 @@ export const profile = {
   email: "Tanishshivhare2@gmail.com",
   github: "https://github.com/TANISHX1",
   linkedin: "https://www.linkedin.com/in/tanish-shivhare-71b576222",
-  bio: "Passionate about low-level systems, kernel development, and high-performance networking. Building the next generation of efficient software.",
+  bio: "Curious and self-driven Computer Science student with a strong passion for understanding how computers work at their core. I enjoy solving low-level problems, debugging tricky issues, and building projects from scratch using C on Linux.",
   skillCategories: [
     {
       title: "Systems & Low-Level",
@@ -25,7 +25,11 @@ export const profile = {
     },
     {
       title: "Tools & Environment",
-      skills: ["Linux/Unix", "Git & GitHub", "Makefiles", "GDB/Valgrind"]
+      skills: ["Linux/Unix", "Git & GitHub", "Makefiles", "GDB/Valgrind", "Markdown (Obsidian)"]
+    },
+    {
+      title: "Data & Analytics",
+      skills: ["Power BI", "Tableau", "Data Visualization", "SQL Basics"]
     }
   ]
 };

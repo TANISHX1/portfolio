@@ -1,11 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { TerminalApp } from "./apps/TerminalApp";
 import { SkillsApp } from "./apps/SkillsApp";
 import { ProjectsApp } from "./apps/ProjectsApp";
-import { ProjectDetailApp } from "./apps/ProjectDetailApp";
+import { ProjectDetailApp } from "@/components/apps/ProjectDetailApp";
+import { MusicApp } from "./apps/MusicApp";
+import { ContactsApp } from "./apps/ContactsApp";
+import { TourOverlay } from "./os/TourOverlay";
 import { Project } from "@/data/projects";
 import { profile } from "@/data/profile";
 import { desktopIcons } from "@/data/desktop";
@@ -17,10 +20,11 @@ import { ShutdownView } from "./os/ShutdownView";
 import { fetchGithubProfile, fetchGithubRepos } from "@/lib/github";
 import { ThemeProvider, useTheme } from "@/context/ThemeContext";
 import { BootSequence } from "./os/BootSequence";
+import { WelcomeView } from "./os/WelcomeView";
 import { Star, LayoutGrid, Monitor, History, LogOut, ChevronRight } from "lucide-react";
 
-type AppName = "Terminal" | "Skills" | "Projects" | "ProjectDetail" | null;
-type SystemState = 'booting' | 'running' | 'suspended' | 'shutdown';
+type AppName = "Terminal" | "Skills" | "Projects" | "ProjectDetail" | "Music" | "Contacts" | "Tour" | null;
+type SystemState = 'booting' | 'welcome' | 'running' | 'suspended' | 'shutdown';
 
 export function Desktop({ username }: { username: string }) {
   return (
@@ -37,9 +41,12 @@ function DesktopContent({ username }: { username: string }) {
   const [openApps, setOpenApps] = useState<AppName[]>(["Terminal"]);
   const [activeApp, setActiveApp] = useState<AppName>("Terminal");
   const [minimizedApps, setMinimizedApps] = useState<AppName[]>([]);
+  const [isTourActive, setIsTourActive] = useState(false);
   const [showLauncher, setShowLauncher] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [volume, setVolume] = useState(70);
+  const [terminalCommand, setTerminalCommand] = useState<string | null>(null);
   const { theme } = useTheme();
 
   // Optimization: Pre-load data and assets during boot
@@ -61,24 +68,40 @@ function DesktopContent({ username }: { username: string }) {
         ]);
         setGithubData({ profile: githubProfile, repos: githubRepos });
 
-        // 2. Pre-load Critical Assets (Backgrounds + Textures)
+        // 2. Pre-load Critical Assets (Backgrounds + Textures + Sounds)
         addLog("Caching UI resources and system textures...");
         const assetsToPreload = [
           '/background1.jpg',
           '/background2.jpg',
           'https://grainy-gradients.vercel.app/noise.svg',
-          githubProfile?.avatar_url
+          '/background sounds/opening_sound.wav',
+          githubProfile?.avatar_url,
+          // Pre-load common manual assets if they exist
+          '/manuals/seat-allocation.png',
+          '/manuals/unix-utilities.png',
+          '/manuals/concurrency.png'
         ].filter(Boolean);
 
         await Promise.all(assetsToPreload.map(src => {
           return new Promise((resolve) => {
-            const img = new Image();
-            img.src = src!;
-            img.onload = () => {
-              if (src?.includes('background')) addLog(`   • Texture cached: ${src.split('/').pop()}`);
-              resolve(null);
-            };
-            img.onerror = resolve; 
+            if (src?.endsWith('.wav') || src?.endsWith('.mp3')) {
+              const audio = new Audio();
+              audio.src = src;
+              audio.preload = "auto";
+              audio.oncanplaythrough = () => {
+                addLog(`   • Audio cached: ${src.split('/').pop()}`);
+                resolve(null);
+              };
+              audio.onerror = resolve;
+            } else {
+              const img = new Image();
+              img.src = src!;
+              img.onload = () => {
+                if (src?.includes('background')) addLog(`   • Texture cached: ${src.split('/').pop()}`);
+                resolve(null);
+              };
+              img.onerror = resolve; 
+            }
           });
         }));
         
@@ -94,30 +117,58 @@ function DesktopContent({ username }: { username: string }) {
   }, [username, systemState]);
 
   // Optimized openApp to avoid stale state
-  const openApp = (app: AppName) => {
+  const openApp = useCallback((app: AppName, command?: string) => {
     if (!app) return;
+    if (app === "Tour") {
+      setIsTourActive(true);
+      setShowLauncher(false);
+      return;
+    }
+    if (app === "Terminal" && command) {
+      setTerminalCommand(command);
+    }
     setOpenApps(prev => prev.includes(app) ? prev : [...prev, app]);
     setMinimizedApps(prev => prev.filter(a => a !== app));
     setActiveApp(app);
     setShowLauncher(false);
-  };
+  }, []);
 
-  const closeApp = (app: AppName) => {
+  const closeApp = useCallback((app: AppName) => {
     setOpenApps(prev => prev.filter(a => a !== app));
     setMinimizedApps(prev => prev.filter(a => a !== app));
-    if (activeApp === app) setActiveApp(null);
-  };
+    setActiveApp(prev => prev === app ? null : prev);
+  }, []);
 
-  const toggleMinimize = (app: AppName) => {
+  const toggleMinimize = useCallback((app: AppName) => {
     if (!app) return;
-    if (minimizedApps.includes(app)) {
-      setMinimizedApps(prev => prev.filter(a => a !== app));
-      setActiveApp(app);
-    } else {
-      setMinimizedApps(prev => [...prev, app]);
-      if (activeApp === app) setActiveApp(null);
+    if (app === "Tour") {
+      setIsTourActive(prev => !prev);
+      return;
     }
-  };
+    setMinimizedApps(prev => {
+      if (prev.includes(app)) {
+        const next = prev.filter(a => a !== app);
+        setActiveApp(app);
+        return next;
+      } else {
+        setActiveApp(null);
+        return [...prev, app];
+      }
+    });
+  }, []);
+
+  const closeAllApps = useCallback(() => {
+    setOpenApps([]);
+    setMinimizedApps([]);
+    setActiveApp(null);
+  }, []);
+
+  // Auto-close windows when tour starts
+  useEffect(() => {
+    if (isTourActive) {
+      closeAllApps();
+    }
+  }, [isTourActive, closeAllApps]);
 
   const launcherItems = [
     { label: "Favorites", icon: Star },
@@ -148,9 +199,13 @@ function DesktopContent({ username }: { username: string }) {
       {systemState === 'booting' && (
         <BootSequence 
           key="boot" 
-          onComplete={() => setSystemState('running')} 
+          onComplete={() => setSystemState('welcome')} 
           realLogs={realLogs}
         />
+      )}
+
+      {systemState === 'welcome' && (
+        <WelcomeView key="welcome" onComplete={() => setSystemState('running')} />
       )}
 
       {systemState === 'suspended' && (
@@ -178,8 +233,15 @@ function DesktopContent({ username }: { username: string }) {
             showLauncher={showLauncher}
             profileName={githubData.profile?.name || profile.name}
             isDragging={isDragging}
+            volume={volume}
+            setVolume={setVolume}
             onSystemAction={(action) => {
-              if (action === 'restart') setSystemState('booting');
+              if (action === 'restart') {
+                setSystemState('booting');
+                setOpenApps(["Terminal"]);
+                setActiveApp("Terminal");
+                setMinimizedApps([]);
+              }
               if (action === 'shutdown') setSystemState('shutdown');
               if (action === 'suspend') setSystemState('suspended');
             }}
@@ -209,7 +271,7 @@ function DesktopContent({ username }: { username: string }) {
                   <div className={`flex-1 p-6 flex flex-col ${isRice ? 'text-purple-100' : 'text-[#31363b]'}`}>
                     <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-6 px-2">Applications</div>
                     <div className="flex flex-col gap-1">
-                      {desktopIcons.map(item => (
+                      {desktopIcons.filter(item => item.id !== "ProjectDetail").map(item => (
                         <button key={item.id} onClick={() => openApp(item.id as AppName)} className={`flex items-center justify-between p-3 rounded-xl transition-all group ${isRice ? 'hover:bg-purple-500/10' : 'hover:bg-black/5'}`}>
                           <div className="flex items-center gap-4">
                             <div className={`p-2 rounded-lg shadow-sm border ${isRice ? 'bg-zinc-800 border-purple-500/20 group-hover:border-purple-500/50' : 'bg-white border-black/5 group-hover:border-blue-500/30'} ${item.color}`}>
@@ -231,7 +293,7 @@ function DesktopContent({ username }: { username: string }) {
 
             {/* Desktop Icons */}
             <div className="hidden lg:flex flex-col gap-6 items-start w-24 pt-4 relative z-10">
-              {desktopIcons.map((item) => {
+              {desktopIcons.filter(item => item.id !== "ProjectDetail").map((item) => {
                 const Icon = item.icon;
                 const isActive = activeApp === item.id;
                 
@@ -264,11 +326,13 @@ function DesktopContent({ username }: { username: string }) {
                 {openApps.includes("Terminal") && (
                   <TerminalApp 
                     key="term" 
+                    id="terminal-window"
                     profile={githubData.profile || profile} 
                     isActive={activeApp === "Terminal"} 
                     isMinimized={minimizedApps.includes("Terminal")}
                     onClose={() => closeApp("Terminal")} onMinimize={() => toggleMinimize("Terminal")} onClick={() => setActiveApp("Terminal")}
                     setIsDragging={setIsDragging}
+                    initialCommand={terminalCommand}
                   />
                 )}
                 {openApps.includes("Skills") && (
@@ -281,6 +345,7 @@ function DesktopContent({ username }: { username: string }) {
                 {openApps.includes("Projects") && (
                   <ProjectsApp 
                     key="proj" 
+                    id="projects-window"
                     repos={githubData.repos} 
                     isActive={activeApp === "Projects"} 
                     isMinimized={minimizedApps.includes("Projects")}
@@ -303,12 +368,48 @@ function DesktopContent({ username }: { username: string }) {
                     setIsDragging={setIsDragging}
                   />
                 )}
+                {openApps.includes("Music") && (
+                  <MusicApp 
+                    key="music" 
+                    isActive={activeApp === "Music"} 
+                    isMinimized={minimizedApps.includes("Music")}
+                    onClose={() => closeApp("Music")} 
+                    onMinimize={() => toggleMinimize("Music")} 
+                    onClick={() => setActiveApp("Music")}
+                    setIsDragging={setIsDragging}
+                    systemVolume={volume}
+                  />
+                )}
+
+                {openApps.includes("Contacts") && (
+                  <ContactsApp 
+                    key="Contacts"
+                    isActive={activeApp === "Contacts"}
+                    isMinimized={minimizedApps.includes("Contacts")}
+                    onClose={() => closeApp("Contacts")}
+                    onMinimize={() => toggleMinimize("Contacts")}
+                    onClick={() => setActiveApp("Contacts")}
+                    setIsDragging={setIsDragging}
+                  />
+                )}
+
+                {isTourActive && (
+                  <TourOverlay 
+                    key="Tour" 
+                    onComplete={() => setIsTourActive(false)} 
+                    openApp={openApp}
+                    closeApp={closeApp}
+                    closeAllApps={closeAllApps}
+                    selectedProject={selectedProject}
+                  />
+                )}
               </AnimatePresence>
             </div>
           </main>
 
           <Dock 
             onOpenApp={openApp} 
+            onToggleMinimize={toggleMinimize}
             openApps={openApps as string[]} 
             activeApp={activeApp} 
             isDragging={isDragging}
