@@ -90,7 +90,7 @@ export const SkillsApp = React.memo(function SkillsApp({ isActive, isMinimized, 
   }));
 
   const renderGauge = (label: string, value: number, max: number, color: string) => {
-    const percent = (value / max) * 100;
+    const percent = Math.min(100, Math.max(0, (value / max) * 100));
     const bars = 20;
     const activeBars = Math.floor((percent / 100) * bars);
     
@@ -132,20 +132,20 @@ export const SkillsApp = React.memo(function SkillsApp({ isActive, isMinimized, 
         <div className="flex flex-col md:flex-row gap-16 mb-20 items-start">
           {/* ASCII Logo */}
           <div className={`text-base leading-none select-none font-black ${isRice ? 'text-purple-500' : 'text-cyan-500'}`}>
-            <pre>
-{`         .---.
-        /     \\
-       | () () |
-        \\  ^  /
-         |||||
-         |||||
-      '--hhhhh--'
-     /           \\
-    |             |
-    |             |
-    \\___________/
-     |         |
-     |         |`}
+            <pre style={{ fontVariantLigatures: 'none' }}>
+{`            .---.
+           /     \\
+          | () () |
+           \\  ^  /
+            |||||
+            |||||
+         '--hhhhh--'
+        /           \\
+       |             |
+       |             |
+       \\_____________/
+         |         |
+         |         |`}
             </pre>
           </div>
 

@@ -76,10 +76,7 @@ function DesktopContent({ username }: { username: string }) {
           'https://grainy-gradients.vercel.app/noise.svg',
           '/background sounds/opening_sound.wav',
           githubProfile?.avatar_url,
-          // Pre-load common manual assets if they exist
-          '/manuals/seat-allocation.png',
-          '/manuals/unix-utilities.png',
-          '/manuals/concurrency.png'
+          // Assets preloading
         ].filter(Boolean);
 
         await Promise.all(assetsToPreload.map(src => {

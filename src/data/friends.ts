@@ -78,5 +78,29 @@ export const friends: Friend[] = [
       email: "rahulyadavofficial776@gmail.com",
       phone: "9770508470"
     }
+  },
+  {
+    id: "lavanya-bajpai",
+    name: "Lavanya Bajpai",
+    role: "Developer",
+    bio: "Passionate developer exploring new technologies and building impactful solutions.",
+    color: "from-pink-600 to-rose-500",
+    links: {
+      github: "https://github.com/Lavanya-Bajpai",
+      linkedin: "https://www.linkedin.com/in/lavanya-bajpai-0932a332a?utm_source=share_via&utm_content=profile&utm_medium=member_android",
+      email: "lavanya1007bajpai@gmail.com"
+    }
+  },
+  {
+    id: "seahcodes",
+    name: "Shruti Tiwari",
+    role: "Developer",
+    bio: "Passionate developer exploring new technologies and building impactful solutions.",
+    color: "from-emerald-600 to-teal-500",
+    links: {
+      github: "https://github.com/seahcodes",
+      linkedin: "https://www.linkedin.com/in/shruti-tiwari-6a558633a/",
+      email: "seah4393@gmail.com"
+    }
   }
 ];
