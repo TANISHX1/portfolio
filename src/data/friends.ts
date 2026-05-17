@@ -18,30 +18,6 @@ export interface Friend {
 
 export const friends: Friend[] = [
   {
-    id: "1",
-    name: "Alex Rivera",
-    role: "Full Stack Developer",
-    bio: "Passionate about building scalable web applications and exploring new technologies. Lover of clean code and dark themes.",
-    color: "from-blue-500 to-cyan-500",
-    links: {
-      github: "https://github.com",
-      linkedin: "https://linkedin.com",
-      email: "alex@example.com"
-    }
-  },
-  {
-    id: "2",
-    name: "Sarah Chen",
-    role: "UI/UX Designer",
-    bio: "Creating beautiful and intuitive user experiences is my mission. I specialize in glassmorphism and modern design systems.",
-    color: "from-purple-500 to-pink-500",
-    links: {
-      github: "https://github.com",
-      twitter: "https://twitter.com",
-      email: "sarah@example.com"
-    }
-  },
-  {
     id: "yash",
     name: "Yash Sudhakar",
     role: "Full Stack Developer & AI Enthusiast",
@@ -55,22 +31,11 @@ export const friends: Friend[] = [
     }
   },
   {
-    id: "3",
-    name: "Marcus Thorne",
-    role: "Security Researcher",
-    bio: "Deep diving into kernel exploits and low-level systems. If it has a byte, I'll find a way to manipulate it.",
-    color: "from-emerald-500 to-teal-500",
-    links: {
-      github: "https://github.com",
-      linkedin: "https://linkedin.com",
-      email: "marcus@example.com"
-    }
-  },
-  {
     id: "rahul-yadav",
     name: "Rahul Yadav",
-    role: "Developer",
-    bio: "Passionate developer exploring new technologies and building impactful solutions.",
+    role: "Full Stack & Vision Developer",
+    bio: "Versatile developer bridging systems programming and modern web technologies. Experienced in building robust full-stack applications in TypeScript and developing computer vision solutions like virtual tripwire intrusion systems with OpenCV. Actively solving complex algorithmic challenges in C++.",
+    avatar: "/avatars/rahul.jpg",
     color: "from-blue-600 to-indigo-500",
     links: {
       github: "https://github.com/rahul-ydv101",
@@ -82,8 +47,9 @@ export const friends: Friend[] = [
   {
     id: "lavanya-bajpai",
     name: "Lavanya Bajpai",
-    role: "Developer",
-    bio: "Passionate developer exploring new technologies and building impactful solutions.",
+    role: "Full Stack & ML Developer",
+    bio: "Innovative developer with a strong focus on Python-based machine learning applications and interactive web development. Creator of intelligent image detection tools, with experience architecting comprehensive systems like seat allocation platforms and modern TypeScript applications.",
+    avatar: "/avatars/lavanya_.png",
     color: "from-pink-600 to-rose-500",
     links: {
       github: "https://github.com/Lavanya-Bajpai",
@@ -94,8 +60,9 @@ export const friends: Friend[] = [
   {
     id: "seahcodes",
     name: "Shruti Tiwari",
-    role: "Developer",
-    bio: "Passionate developer exploring new technologies and building impactful solutions.",
+    role: "Frontend & UI Developer",
+    bio: "Creative developer focused on crafting intuitive user experiences and practical applications. Experienced in building responsive tools like academic planners and currency converters, blending foundational low-level programming with modern JavaScript logic.",
+    avatar: "/avatars/shruti.jpg",
     color: "from-emerald-600 to-teal-500",
     links: {
       github: "https://github.com/seahcodes",

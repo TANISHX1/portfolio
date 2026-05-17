@@ -9,6 +9,8 @@ import { ProjectDetailApp } from "@/components/apps/ProjectDetailApp";
 import { MusicApp } from "./apps/MusicApp";
 import { ContactsApp } from "./apps/ContactsApp";
 import { TourOverlay } from "./os/TourOverlay";
+import { AboutApp } from "./apps/AboutApp";
+import { ContactApp } from "./apps/ContactApp";
 import { Project } from "@/data/projects";
 import { profile } from "@/data/profile";
 import { desktopIcons } from "@/data/desktop";
@@ -268,7 +270,7 @@ function DesktopContent({ username }: { username: string }) {
                   <div className={`flex-1 p-6 flex flex-col ${isRice ? 'text-purple-100' : 'text-[#31363b]'}`}>
                     <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest mb-6 px-2">Applications</div>
                     <div className="flex flex-col gap-1">
-                      {desktopIcons.filter(item => item.id !== "ProjectDetail").map(item => (
+                      {desktopIcons.filter(item => item.id !== "ProjectDetail" && item.id !== "ContactMe").map(item => (
                         <button key={item.id} onClick={() => openApp(item.id as AppName)} className={`flex items-center justify-between p-3 rounded-xl transition-all group ${isRice ? 'hover:bg-purple-500/10' : 'hover:bg-black/5'}`}>
                           <div className="flex items-center gap-4">
                             <div className={`p-2 rounded-lg shadow-sm border ${isRice ? 'bg-zinc-800 border-purple-500/20 group-hover:border-purple-500/50' : 'bg-white border-black/5 group-hover:border-blue-500/30'} ${item.color}`}>
@@ -290,7 +292,7 @@ function DesktopContent({ username }: { username: string }) {
 
             {/* Desktop Icons */}
             <div className="hidden lg:flex flex-col gap-6 items-start w-24 pt-4 relative z-10">
-              {desktopIcons.filter(item => item.id !== "ProjectDetail").map((item) => {
+              {desktopIcons.filter(item => item.id !== "ProjectDetail" && item.id !== "ContactMe").map((item) => {
                 const Icon = item.icon;
                 const isActive = activeApp === item.id;
                 
@@ -386,6 +388,30 @@ function DesktopContent({ username }: { username: string }) {
                     onClose={() => closeApp("Contacts")}
                     onMinimize={() => toggleMinimize("Contacts")}
                     onClick={() => setActiveApp("Contacts")}
+                    setIsDragging={setIsDragging}
+                  />
+                )}
+
+                {openApps.includes("About") && (
+                  <AboutApp 
+                    key="About"
+                    isActive={activeApp === "About"}
+                    isMinimized={minimizedApps.includes("About")}
+                    onClose={() => closeApp("About")}
+                    onMinimize={() => toggleMinimize("About")}
+                    onClick={() => setActiveApp("About")}
+                    setIsDragging={setIsDragging}
+                  />
+                )}
+
+                {openApps.includes("ContactMe") && (
+                  <ContactApp 
+                    key="ContactMe"
+                    isActive={activeApp === "ContactMe"}
+                    isMinimized={minimizedApps.includes("ContactMe")}
+                    onClose={() => closeApp("ContactMe")}
+                    onMinimize={() => toggleMinimize("ContactMe")}
+                    onClick={() => setActiveApp("ContactMe")}
                     setIsDragging={setIsDragging}
                   />
                 )}

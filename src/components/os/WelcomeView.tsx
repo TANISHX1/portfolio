@@ -11,8 +11,8 @@ export const WelcomeView = React.memo(function WelcomeView({ onComplete }: Welco
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    // Play the opening sound
-    if (audioRef.current) {
+    // Play the opening sound only on desktop
+    if (audioRef.current && window.innerWidth >= 768) {
       audioRef.current.volume = 0.5;
       audioRef.current.play().catch((e: any) => console.warn("Audio playback blocked:", e));
     }

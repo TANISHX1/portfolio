@@ -8,7 +8,7 @@ const jbMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'root@tanishx1:~',
+  title: 'TANXOS | Tanish Shivhare',
   description: 'System Programming & OS Concentrated Developer Portfolio',
 };
 
