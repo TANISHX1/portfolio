@@ -25,6 +25,7 @@ export function Dock({ onOpenApp, onToggleMinimize, openApps, activeApp, isDragg
     }`}>
       {desktopIcons.filter(app => {
         if (app.id === "ProjectDetail") return openApps.includes("ProjectDetail");
+        if (app.id === "ContactMe") return false;
         return true;
       }).map((app) => {
         const isOpen = openApps.includes(app.id);

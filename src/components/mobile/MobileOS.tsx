@@ -21,7 +21,7 @@ const MobileAbout = dynamic(() => import('./apps/MobileAbout').then(mod => mod.M
 const MobileContact = dynamic(() => import('./apps/MobileContact').then(mod => mod.MobileContact), { ssr: false });
 import { Project } from "@/data/projects";
 
-type AppName = "Terminal" | "Skills" | "Projects" | "ProjectDetail" | "Music" | "Contacts" | "Tour" | null;
+type AppName = "Terminal" | "Skills" | "Projects" | "ProjectDetail" | "Music" | "Contacts" | "Tour" | "About" | "ContactMe" | null;
 
 export function MobileOS({ username }: { username: string }) {
   return (

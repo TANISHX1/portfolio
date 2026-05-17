@@ -41,16 +41,16 @@ export const MobileProjects = React.memo(function MobileProjects({ onClose, repo
                 {project.desc}
               </p>
               
-              {project.techStack?.length > 0 && (
+              {(project.techHighlights ?? []).length > 0 && (
                 <div className="flex gap-2 mt-4 overflow-x-auto pb-1 custom-scrollbar">
-                  {project.techStack.slice(0, 3).map((tech: string) => (
+                  {(project.techHighlights ?? []).slice(0, 3).map((tech: string) => (
                     <span key={tech} className="px-2 py-1 text-[10px] font-medium bg-white/5 border border-white/5 rounded-md whitespace-nowrap">
                       {tech}
                     </span>
                   ))}
-                  {project.techStack.length > 3 && (
+                  {(project.techHighlights ?? []).length > 3 && (
                     <span className="px-2 py-1 text-[10px] font-medium bg-white/5 border border-white/5 rounded-md text-white/50">
-                      +{project.techStack.length - 3}
+                      +{(project.techHighlights ?? []).length - 3}
                     </span>
                   )}
                 </div>

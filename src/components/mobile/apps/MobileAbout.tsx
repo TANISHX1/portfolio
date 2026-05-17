@@ -46,7 +46,7 @@ export const MobileAbout = React.memo(function MobileAbout({ onClose }: any) {
         <div>
           <h3 className="text-xs uppercase font-bold opacity-50 mb-3 tracking-widest">Biography</h3>
           <p className="text-[13px] leading-relaxed opacity-80 whitespace-pre-wrap">
-            {profile.bio || profile.longDesc || "Passionate software engineer building high-performance systems and dynamic web experiences."}
+            {profile.bio || "Passionate software engineer building high-performance systems and dynamic web experiences."}
           </p>
         </div>
       </div>

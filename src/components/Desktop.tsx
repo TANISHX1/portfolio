@@ -25,7 +25,7 @@ import { BootSequence } from "./os/BootSequence";
 import { WelcomeView } from "./os/WelcomeView";
 import { Star, LayoutGrid, Monitor, History, LogOut, ChevronRight } from "lucide-react";
 
-type AppName = "Terminal" | "Skills" | "Projects" | "ProjectDetail" | "Music" | "Contacts" | "Tour" | null;
+type AppName = "Terminal" | "Skills" | "Projects" | "ProjectDetail" | "Music" | "Contacts" | "Tour" | "About" | "ContactMe" | null;
 type SystemState = 'booting' | 'welcome' | 'running' | 'suspended' | 'shutdown';
 
 export function Desktop({ username }: { username: string }) {
